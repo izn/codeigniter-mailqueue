@@ -8,7 +8,8 @@ CI Mail Queue is a simple library (extended from CI_Mail) to queue emails in dat
 
 How to Use?
 ------------
-Just add cronjobs.
+
+Import the schema and add cronjobs.
 
 E.g.:
 - Send pending emails each 2 minutes.
