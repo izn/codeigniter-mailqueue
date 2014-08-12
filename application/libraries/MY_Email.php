@@ -36,6 +36,8 @@ class MY_Email extends CI_Email
 
 		$this->expiration = 60*5;
         $this->CI = & get_instance();
+
+        $this->CI->load->database('default');
 	}
 
 	public function set_status($status)
@@ -74,8 +76,10 @@ class MY_Email extends CI_Email
 
 		$date = date("Y-m-d H:i:s");
 
+		$to = is_array($this->_recipients) ? implode(", ", $this->_recipients) : $this->_recipients;
+
 		$dbdata = array(
-            'to' => implode(", ", $this->_recipients),
+            'to' => $to,
 			'message' => $this->_body,
             'headers' => serialize($this->_headers),
 			'status' => 'pending',
