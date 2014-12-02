@@ -77,9 +77,13 @@ class MY_Email extends CI_Email
 		$date = date("Y-m-d H:i:s");
 
 		$to = is_array($this->_recipients) ? implode(", ", $this->_recipients) : $this->_recipients;
+		$cc = implode(", ", $this->_cc_array);
+		$bcc = implode(", ", $this->_bcc_array);
 
 		$dbdata = array(
             'to' => $to,
+            'cc' => $cc,
+            'bcc' => $bcc,
 			'message' => $this->_body,
             'headers' => serialize($this->_headers),
 			'status' => 'pending',
@@ -122,9 +126,16 @@ class MY_Email extends CI_Email
 		foreach ($emails as $email)
 		{
             $recipients = explode(", ", $email->to);
+
+            $cc = !empty($email->cc) ? explode(", ", $email->cc) : array();
+            $bcc = !empty($email->bcc) ? explode(", ", $email->bcc) : array();
+
             $this->_headers = unserialize($email->headers);
             
             $this->to($recipients);
+            $this->cc($cc);
+            $this->bcc($bcc);
+
 			$this->message($email->message);
 
             if ($this->send(TRUE)) {
