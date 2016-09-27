@@ -24,7 +24,7 @@ class MY_Email extends CI_Email
 
     // Status (pending, sending, sent, failed)
     private $status;
-    
+
     /**
      * Constructor
      */
@@ -56,7 +56,7 @@ class MY_Email extends CI_Email
     {
         if ($this->status != FALSE)
             $this->CI->db->where('q.status', $this->status);
-        
+
         $query = $this->CI->db->get("{$this->table_email_queue} q", $limit, $offset);
 
         return $query->result();
@@ -92,7 +92,7 @@ class MY_Email extends CI_Email
 
         return $this->CI->db->insert($this->table_email_queue, $dbdata);
     }
-    
+
     /**
      * Start process
      *
@@ -101,12 +101,12 @@ class MY_Email extends CI_Email
      */
     public function start_process()
     {
-        $filename = FCPATH . 'index.php';       
+        $filename = FCPATH . 'index.php';
         $exec = shell_exec("{$this->phpcli} {$filename} {$this->main_controller} > /dev/null &");
 
         return $exec;
     }
-    
+
     /**
      * Send queue
      *
@@ -117,12 +117,12 @@ class MY_Email extends CI_Email
     {
         $this->set_status('pending');
         $emails = $this->get();
-        
+
         $this->CI->db->where('status', 'pending');
         $this->CI->db->set('status', 'sending');
         $this->CI->db->set('date', date("Y-m-d H:i:s"));
         $this->CI->db->update($this->table_email_queue);
-            
+
         foreach ($emails as $email)
         {
             $recipients = explode(", ", $email->to);
@@ -131,7 +131,7 @@ class MY_Email extends CI_Email
             $bcc = !empty($email->bcc) ? explode(", ", $email->bcc) : array();
 
             $this->_headers = unserialize($email->headers);
-            
+
             $this->to($recipients);
             $this->cc($cc);
             $this->bcc($bcc);
@@ -145,20 +145,20 @@ class MY_Email extends CI_Email
             }
 
             $this->CI->db->where('id', $email->id);
-            
+
             $this->CI->db->set('status', $status);
             $this->CI->db->set('date', date("Y-m-d H:i:s"));
             $this->CI->db->update($this->table_email_queue);
         }
     }
-    
+
     /**
      * Retry failed emails
      *
      * Resend failed or expired emails
-     * @return void 
+     * @return void
      */
-    public function retry_queue() 
+    public function retry_queue()
     {
         $expire = (time() - $this->expiration);
         $date_expire = date("Y-m-d H:i:s", $expire);
@@ -166,12 +166,9 @@ class MY_Email extends CI_Email
         $this->CI->db->set('status', 'pending');
         $this->CI->db->where("(date < '{$date_expire}' AND status = 'sending')");
         $this->CI->db->or_where("status = 'failed'");
-        
+
         $this->CI->db->update($this->table_email_queue);
-        
-        $this->status('pending');
-        $this->send();
-        
+
         log_message('debug', 'Email queue retrying...');
     }
 }
