@@ -10,6 +10,9 @@ class Queue_email extends CI_Controller
 			show_404();
 
 		$this->load->library('email');
+		
+		//resolves error relating to sending HTML emails
+        	$this->email->set_newline("\r\n");
 
 	}
 
