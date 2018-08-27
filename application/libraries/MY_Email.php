@@ -55,9 +55,9 @@ class MY_Email extends CI_Email
     public function get($limit = NULL, $offset = NULL)
     {
         if ($this->status != FALSE)
-            $this->CI->db->where('q.status', $this->status);
+            $this->CI->db->where('status', $this->status);
 
-        $query = $this->CI->db->get("{$this->table_email_queue} q", $limit, $offset);
+        $query = $this->CI->db->get("{$this->table_email_queue}", $limit, $offset);
 
         return $query->result();
     }
