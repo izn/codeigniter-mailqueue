@@ -6,6 +6,7 @@ CREATE TABLE `email_queue` (
   `cc` varchar(255) DEFAULT NULL,
   `bcc` varchar(255) DEFAULT NULL,
   `message` text NOT NULL,
+  `attachments` longtext NOT NULL,
   `status` enum('pending','sending','sent','failed') DEFAULT NULL,
   `date` datetime DEFAULT NULL,
   `headers` text,
