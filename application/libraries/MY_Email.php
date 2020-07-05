@@ -86,6 +86,7 @@ class MY_Email extends CI_Email
             'bcc' => $bcc,
             'message' => $this->_body,
             'headers' => serialize($this->_headers),
+            'attachments' => serialize($this->_attachments),
             'status' => 'pending',
             'date' => $date
         );
@@ -131,6 +132,7 @@ class MY_Email extends CI_Email
             $bcc = !empty($email->bcc) ? explode(", ", $email->bcc) : array();
 
             $this->_headers = unserialize($email->headers);
+            $this->_attachments = unserialize($email->attachments);
 
             $this->to($recipients);
             $this->cc($cc);
